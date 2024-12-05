@@ -1,3 +1,5 @@
+import numpy as np
+
 ## Part 1
 
 # Import the file
@@ -26,4 +28,30 @@ for item in lines:
 
 print(len(valid_items))
 
-## gave up on part 2, will come back to it later
+## part 2
+
+
+import numpy as np
+
+# Function to check if all numbers are either increasing or decreasing, considering the Problem Dampener rule
+def check_dampened_order(numbers):
+    diff = np.diff(numbers)
+    increasing = np.all(diff > 0) and np.all(diff <= 3)
+    decreasing = np.all(diff < 0) and np.all(diff >= -3)
+    if increasing or decreasing:
+        return True
+    for i in range(len(numbers)-1):
+        if abs(numbers[i] - numbers[i+1]) >= 1 and abs(numbers[i] - numbers[i+1]) <= 3:
+            # Remove the current number and check if the remaining numbers satisfy the order condition
+            if check_dampened_order(numbers[:i] + numbers[i+1:]):
+                return True
+    return False
+
+valid_items_d = []
+for item in lines:
+    numbers = list(map(int, item.split()))
+    if not check_dampened_order(numbers):
+        continue
+    valid_items_d.append(item)
+
+print(len(valid_items_d))
